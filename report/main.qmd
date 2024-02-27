@@ -1,1 +1,14 @@
+---
+title: HW2
+author: Haibo 
+date: 2024-03-01
+bibliography: ../references/hw2.bib
+---
+# Introduction
+
+
+
+\newpage
+## References
+
 
