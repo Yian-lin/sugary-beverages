@@ -16,7 +16,7 @@ bibliography: ../references/hw2.bib
 # Formal Analysis
 
 
-# Conclusion
+# Conclusions
 
 \newpage
 # References
