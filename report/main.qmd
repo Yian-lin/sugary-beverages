@@ -1,12 +1,21 @@
 ---
 title: HW2
-author: Haibo 
+author: Yian Lin, Haibo Wu, Wakeel Adekunle Kasali
 date: 2024-03-01
 bibliography: ../references/hw2.bib
 ---
 # Introduction
 
+# Data Summary
 
+
+# EDA Analysis
+
+
+# Formal Analysis
+
+
+# Conclusion
 
 \newpage
 ## References
