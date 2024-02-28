@@ -6,6 +6,7 @@ format:
   pdf :
     fontsize: 12pt
 header-includes: 
+  \usepackage{caption}
   \newcommand{\beginAppendix}{
     \setcounter{table}{0}  
     \renewcommand{\thetable}{A\arabic{table}}}
@@ -41,7 +42,7 @@ sale_data <- sale_data %>%
 ```{r fig.height=3}
 #missing data, overall
 plot_missing_values_proportions(df=sale_data) +
-  ggtitle("Figure 1: The proportion of missing values for all columns in the data set.")
+  ggtitle("",subtitle = "Figure 1: The proportion of missing values for all columns in the data set.")
 ```
 
 ```{r}
@@ -52,10 +53,25 @@ count_missing<- sale_data %>%
 
 # Table
 kable(count_missing, caption = "Number of missing observations for columns with missing data present by site")
- 
 ```
 
-For columns of interest (e.g. `ZeroCal` and `Sugary`), it is recommended to go back to the raw data set and further check on the rows with missing data in these two columns, so that we could see 
+To explore the change of daily sales of zero-calorie beverages and bottled sugared beverages over time, time series plot for `ZeroCal` and `Sugary` can be made for each of the three sites (see Figure 2 as an example). It is important to note that the increase in the raw counts of say zero-calorie beverages being sold does not necessarily mean the decrease in the sales of sugared beverages. It could be the case that more customs came to the shops that day so that sales of all things tended to be higher. Therefore, in addition to visualize the change of daily sales using the raw counts, it is suggested to also explore the change of daily sales in percentage terms (using the daily sum of sales of zero-calorie beverages and sugared beverages as the denominator). Change in the percentage can better represent the change in zero-calorie beverages consumption relative to the sugared beverages consumption, and vice versa. 
+
+```{r}
+# delete rows with missing data in both ZeroCal and Sugary
+sale_data_c <- sale_data %>%
+  filter(!(is.na(ZeroCal) | is.na(Sugary)))
+
+# Plot Daily sales of ZeroCal
+ggplot(data=sale_data_c, 
+       aes(x=Count, y=ZeroCal, group=Site)) +
+  geom_line(aes(color=Intervention)) + 
+  geom_point(aes(color=Intervention), size=0.5) + 
+  facet_wrap( ~ Site, ncol = 1, scales = "free_y") + 
+  xlab("Day") + 
+  ylab("Daily sales of zero-calorie beverages") +
+  ggtitle("",subtitle = "Figure 2: Daily sales of zero-calorie beverages over time for each of the three sites")
+```
 
 # Formal Analysis
 
