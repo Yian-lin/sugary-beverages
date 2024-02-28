@@ -2,8 +2,25 @@
 title: HW2
 author: Yian Lin, Haibo Wu, Wakeel Adekunle Kasali
 date: 2024-03-01
+format: 
+  pdf :
+    fontsize: 12pt
+header-includes: 
+  \newcommand{\beginAppendix}{
+    \setcounter{table}{0}  
+    \renewcommand{\thetable}{A\arabic{table}}}
 bibliography: ../references/hw2.bib
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(rmiss)
+library(knitr)
+```
 
 # Introduction
 
@@ -11,7 +28,34 @@ bibliography: ../references/hw2.bib
 
 
 # EDA Analysis
+Before doing any analysis, it is important to first assess data missingness. A graph (like Figure 1) can be drawn to visualize the proportion of missing values for all columns in the data set. If there are missing data, it is suggested to create a table to show the data missingness by `Site` for columns with missing data (see Table 1). To see from which intervention type the missing data comes from, an expanded table can be made to show the data missingness by `Site` and `Intervention` for columns with missing data (see Table A1 in Appendix). 
 
+```{r}
+sale_data <- read.table("~/Documents/UBC/Courses/STAT 550/HW2/HW2/rawdata/june1data.csv", head=T, sep=",")
+
+#convert DofW, Site and Intervention columns to factor
+sale_data <- sale_data %>% 
+  mutate_at(c('DofW', 'Site', 'Intervention'), as.factor)
+```
+
+```{r fig.height=3}
+#missing data, overall
+plot_missing_values_proportions(df=sale_data) +
+  ggtitle("Figure 1: The proportion of missing values for all columns in the data set.")
+```
+
+```{r}
+# data missingness  by Site
+count_missing<- sale_data %>%
+    group_by(Site) %>%
+    summarise(across(.cols = where(~ any(is.na(.x))), ~sum(is.na(.x))))
+
+# Table
+kable(count_missing, caption = "Number of missing observations for columns with missing data present by site")
+ 
+```
+
+For columns of interest (e.g. `ZeroCal` and `Sugary`), it is recommended to go back to the raw data set and further check on the rows with missing data in these two columns, so that we could see 
 
 # Formal Analysis
 
@@ -21,4 +65,17 @@ bibliography: ../references/hw2.bib
 \newpage
 # References
 
+\newpage
+# Statistical Appendix
+\beginAppendix
 
+```{r}
+# data missingness  by Site
+count_missing<- sale_data %>%
+    group_by(Site, Intervention) %>%
+    summarise(across(.cols = where(~ any(is.na(.x))), ~sum(is.na(.x))))
+
+# Table
+kable(count_missing, caption = "Number of missing observations for columns with missing data present by site and intervention type.")
+ 
+```
