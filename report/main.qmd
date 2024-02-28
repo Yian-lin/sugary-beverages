@@ -9,8 +9,9 @@ bibliography: ../references/hw2.bib
 This study is about 550 homework
 
 # Data Summary
-
-
+This is an experiment study for investigating the effects of five interventions  on consumer inclination towards zero-calorie beverages. The dataset contains the daily sales of different types of beverages (including zero-calorie, sugared and others) under various interventions across three sites, from October 27 to May 23. In this study, the daily sales of each type of beverage are used for measuring the consumers' preference on this type of beverage. The crucial variables are the daily sales of zero-calorie beverages, sugared beverages and total of all the beverages, which are measured as continuous data. On the other hand, based on the objectives of the study, the site and intervention should be treated as categorical variables for further analysis. Additionally, the days of week are also recorded as a categorical variable to determine potential impacts of time on the 
+outcomes. For the entire dataset, the records of these key variables are relatively complete, with sugared and zero-calorie beverages having only a negligible amount of missing data. However, records for other types of beverages show a certain proportion of missing data, which can be considered as missing completely at random. 
+ 
 # EDA Analysis
 
 
