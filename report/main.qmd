@@ -11,7 +11,7 @@ Consumer behavior regarding daily beverage choices is widely observed, with zero
  
  (Further consideration needed) With the given information, we will be approaching the questions and providing  statistical advice in the following ways:
   
- *  We will employ appropriate time series analysis models to determine the potential impacts of time circle on experimental outcomes.
+ *  We will employ appropriate time series analysis models to determine the potential impacts of time cycle on experimental outcomes.
  *  We will use relevant linear mixed models and hypothesis testing methods to determine the effects of different interventions and capture variations by site.
  *  Based on the results above, we will answer the key statistical questions and then give our suggestions for possible  further analysis.
 
