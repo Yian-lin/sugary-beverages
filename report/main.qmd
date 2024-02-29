@@ -21,6 +21,7 @@ knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE)
 library(tidyverse)
 library(rmiss)
 library(knitr)
+library(here)
 ```
 
 # Introduction
@@ -29,10 +30,10 @@ library(knitr)
 
 
 # EDA Analysis
-Before doing any analysis, it is important to first assess data missingness. A graph (like Figure 1) can be drawn to visualize the proportion of missing values for all columns in the data set. If there are missing data, it is suggested to create a table to show the data missingness by `Site` for columns with missing data (see Table 1). To see from which intervention type the missing data comes from, an expanded table can be made to show the data missingness by `Site` and `Intervention` for columns with missing data (see Table A1 in Appendix). 
+Before doing any analysis, it is important to first assess data missingness. A graph (like Figure 1) can be drawn to visualize the proportion of missing values for all columns in the data set. If there are missing data, it is suggested to create a table to show the data missingness by `Site` for columns with missing data (see Table 1). To see from which intervention type the missing data comes from, an expanded table can be made to show the data missingness by `Site` and `Intervention` for columns with missing data (see Table A1 in Appendix). For columns that will be used in the analysis to answer the research question, it is important to find out why the data are missing.
 
 ```{r}
-sale_data <- read.table("~/Documents/UBC/Courses/STAT 550/HW2/HW2/rawdata/june1data.csv", head=T, sep=",")
+sale_data <- read.table(here("rawdata/june1data.csv"), head=T, sep=",")
 
 #convert DofW, Site and Intervention columns to factor
 sale_data <- sale_data %>% 
@@ -71,6 +72,18 @@ ggplot(data=sale_data_c,
   xlab("Day") + 
   ylab("Daily sales of zero-calorie beverages") +
   ggtitle("",subtitle = "Figure 2: Daily sales of zero-calorie beverages over time for each of the three sites")
+```
+
+To compare the consumption of a selected type of beverages (zero-calorie beverages or sugary beverages) among different intervention types, boxplots with sales in percentage terms as y-axis and intervention as x-axis can be made (see Figure 3 as an example).
+
+```{r}
+sale_data_c$Sugary_percent <-
+  sale_data_c$Sugary/(sale_data_c$Sugary+sale_data_c$ZeroCal)*100
+sale_data_c$ZeroCal_percent <-
+  sale_data_c$ZeroCal/(sale_data_c$Sugary+sale_data_c$ZeroCal)*100
+
+
+
 ```
 
 # Formal Analysis
