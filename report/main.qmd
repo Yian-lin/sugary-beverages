@@ -4,7 +4,7 @@ author: Yian Lin, Haibo Wu, Wakeel Adekunle Kasali
 date: 2024-03-01
 format: 
   pdf :
-    fontsize: 12pt
+    fontsize: 11pt
 number-sections: true
 header-includes: 
   \usepackage{caption}
@@ -54,13 +54,13 @@ sale_data <- sale_data %>%
   mutate_at(c('DofW', 'Site', 'Intervention'), as.factor)
 ```
 
-```{r fig.height=3}
+```{r missing-data-plot fig.height=3}
 #missing data, overall
 plot_missing_values_proportions(df=sale_data) +
-  ggtitle("",subtitle = "Figure 1: The proportion of missing values for all columns in the data set.")
+  ggtitle("",subtitle = "Figure 1: The proportion of missing values for all columns in \nthe data set.")
 ```
 
-```{r}
+```{r missing-data-table}
 # data missingness  by Site
 count_missing<- sale_data %>%
     group_by(Site) %>%
@@ -70,32 +70,35 @@ count_missing<- sale_data %>%
 kable(count_missing, caption = "Number of missing observations for columns with missing data present by site")
 ```
 
-To explore the change of daily sales of zero-calorie beverages and bottled sugared beverages over time, time series plot for `ZeroCal` and `Sugary` can be made for each of the three sites (see Figure 2 as an example). It is important to note that the increase in the raw counts of say zero-calorie beverages being sold does not necessarily mean the decrease in the sales of sugared beverages. It could be the case that more customs came to the shops that day so that sales of all things tended to be higher. Therefore, in addition to visualize the change of daily sales using the raw counts, it is suggested to also explore the change of daily sales in percentage terms (i.e. $\frac{\text{sales of zero-calorie beverages}}{\text{sales of zero-calorie beverages + sales of sugared beverages}}*100\%$ and $\frac{\text{sales of sugared beverages}}{\text{sales of zero-calorie beverages + sales of sugared beverages}}*100\%$). Change in the percentage can better represent the change in zero-calorie beverages consumption relative to the sugared beverages consumption, and vice versa. 
+To explore the change of daily sales of zero-calorie beverages and bottled sugared beverages over time, time series plot for `ZeroCal` and `Sugary` can be made for each of the three sites. It is important to note that the increase in the raw counts of say zero-calorie beverages being sold does not necessarily mean the decrease in the sales of sugared beverages. It could be the case that more customs came to the shops that day so that sales of all things tended to be higher. Therefore, in addition to visualize the change of daily sales using the raw counts, it is even more important to explore the change of daily sales in percentage terms (i.e. $\frac{\text{sales of zero-calorie beverages}}{\text{sales of zero-calorie beverages + sales of sugared beverages}}*100\%$ and $\frac{\text{sales of sugared beverages}}{\text{sales of zero-calorie beverages + sales of sugared beverages}}*100\%$) (see Figure 2 as an example). Change in the zero-calorie beverages percentage can better represent the change in zero-calorie beverages consumption relative to the sugared beverages consumption, and vice versa. 
 
 ```{r}
 # delete rows with missing data in both ZeroCal and Sugary
 sale_data_c <- sale_data %>%
   filter(!(is.na(ZeroCal) | is.na(Sugary)))
-
-# Plot Daily sales of ZeroCal
-ggplot(data=sale_data_c, 
-       aes(x=Count, y=ZeroCal, group=Site)) +
-  geom_line(aes(color=Intervention)) + 
-  geom_point(aes(color=Intervention), size=0.5) + 
-  facet_wrap( ~ Site, ncol = 1, scales = "free_y") + 
-  xlab("Day") + 
-  ylab("Daily sales of zero-calorie beverages") +
-  ggtitle("",subtitle = "Figure 2: Daily sales of zero-calorie beverages over time for \neach of the three sites")
 ```
 
 To compare the consumption of a selected type of beverages (zero-calorie beverages or sugary beverages) among different intervention types, boxplots with sales in percentage terms as y-axis and with intervention as x-axis can be made (see Figure 3 as an example). Similarly, boxplots can also be used to compare the consumption of a selected type of beverages among days of week to see if there are any patterns.
 
-```{r}
+```{r time-series-plot fig.height=4, fig.width=6}
 sale_data_c$Sugary_percent <-
   sale_data_c$Sugary/(sale_data_c$Sugary+sale_data_c$ZeroCal)*100
 sale_data_c$ZeroCal_percent <-
   sale_data_c$ZeroCal/(sale_data_c$Sugary+sale_data_c$ZeroCal)*100
 
+# Plot Daily sales of ZeroCal_percent
+ggplot(data=sale_data_c, 
+       aes(x=Count, y=ZeroCal_percent, group=Site)) +
+  geom_line(aes(color=Intervention)) + 
+  geom_point(aes(color=Intervention), size=0.5) + 
+  facet_wrap( ~ Site, ncol = 1, scales = "free_y") + 
+  xlab("Day") + 
+  ylab("Daily percentage of \nzero-calorie beverages sales (%)") +
+  ggtitle("",subtitle = "Figure 2: Daily percentage of zero-calorie beverages sales over time for \neach of the three sites")
+```
+
+
+```{r boxplot}
 #Create a new Intervention column to make boxplots
 sale_data_c$Intervention_new <- sale_data_c$Intervention
 # replace the "preint" in the 2nd half of the study with "preint2"
@@ -117,8 +120,8 @@ ggplot(data=sale_data_c %>%
   geom_boxplot() + 
   facet_wrap( ~ Site, ncol = 3, scales = "free_y") + 
   xlab("Intervention") + 
-  ylab("Daily percentage of \nzero-calorie beverages sales") +
-  ggtitle("",subtitle = "Figure 3: Boxplots of daily percentage of zero-calorie beverages sales for \neach of the three sites") + 
+  ylab("Daily percentage of \nzero-calorie beverages sales (%)") +
+  ggtitle("",subtitle = "Figure 3: Boxplots of daily percentage of zero-calorie beverages sales \nfor each of the three sites") + 
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 ```
@@ -133,6 +136,7 @@ Regarding the predictor variables,  we recommend using `Intervention` and `DofW`
 
 When it comes to the residuals part of each site-specific model, it is suggested to compare four different correlation structure: independent, the first-order autoregressive process (AR(1)), the first-order moving-average process (MA(1)), and the combined autoregressive-moving-average processes (ARMA(p=1, q=1)). A GLS with an independent correlation structure is equivalent to a linear regression which assumes independence among residuals. A GLS with a AR(1) allows the residual at time point t depends on the residual at the previous time point. A GLS with a MA(1) is another way to capture temporal correlation among residuals, and ARMA(p=1, q=1) is the combination of AR(1) and MA(1) (Fox, 2016, p482). For each site, the GLS model with the smallest AIC values can be chosen as the final model. As a result, there will be three final models, one for each site, and the estimated coefficients of different interventions can be used for intervention effect comparisons.
 
+One limitation of this approach is the challenge in statistically testing the differences in intervention effects across different sites. However, we could still learn differences between sites in a sense that maybe statistically significant effects are detected for some interventions in some sites but not in other sites. 
 
 # Conclusions
 
