@@ -1,10 +1,11 @@
 ---
-title: HW2
+title: Comparing intervention effects on zero-calorie beverages consumption
 author: Yian Lin, Haibo Wu, Wakeel Adekunle Kasali
 date: 2024-03-01
 format: 
   pdf :
     fontsize: 12pt
+number-sections: true
 header-includes: 
   \usepackage{caption}
   \newcommand{\beginAppendix}{
@@ -136,10 +137,10 @@ When it comes to the residuals part of each site-specific model, it is suggested
 # Conclusions
 
 \newpage
-# References
+# References {.unnumbered}
 
 \newpage
-# Statistical Appendix
+# Statistical Appendix {.unnumbered}
 \beginAppendix
 
 ```{r}
