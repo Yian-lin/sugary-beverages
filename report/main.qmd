@@ -6,14 +6,16 @@ bibliography: ../references/hw2.bib
 ---
 
 # Introduction
-Consumer behavior regarding daily beverage choices is widely observed, with zero-calorie drinks usually considered as a healthier option. It is reasonable to surmise that methods of sale might impact the sales dynamics of zero-calorie beverages. This study aims to investigate which alternative methods are most effective in encouraging the purchase of zero-calorie drinks. Specifically, there are two primary intervention strategies of interest: one that highlighting the average calorie content in each beverage and/or the amount of exercise needed to burn those calories, and another providing discount information along with explanations for the discounts. To determine the key factors of effect, the consumption patterns of various beverages are compared under the different interventions. The main statistical questions we aim to address include: (1) How do different intervention strategies affect the sales of zero-calorie and sugary beverages, and which strategies are more impactful;
- (2) Whether the effectiveness of the interventions change with site; (3) Compared to the mere numerical values of calorie, if the calorie-relevant information is more effective.
+Consumer behavior regarding daily beverage choices is widely observed, with zero-calorie drinks usually considered as a healthier option. It is reasonable to surmise that methods of sale might impact the sales dynamics of zero-calorie beverages. This study aims to investigate which alternative methods are most effective in encouraging the purchase of zero-calorie drinks. Specifically, there are two primary intervention strategies of interest: one that highlighting the average calorie content in each beverage and/or the amount of exercise needed to burn those calories, and another providing discount information along with explanations for the discounts. To determine the key factors of effect, the consumption patterns of various beverages are compared under the different interventions. The main statistical questions we aim to address include: (1) How do different interventions affect the sales of zero-calorie and sugary beverages, and which strategies are more impactful;
+ (2) Whether the effectiveness of the interventions change with site; (3) Compared to the mere amount of calorie, if the calorie-relevant information is more effective.
  
- (Further consideration needed) With the given information, we will be approaching the questions and providing  statistical advice in the following ways:
+With the given information, we will be approaching the questions and provide statistical advice in the following ways:
   
- *  We will employ appropriate time series analysis models to determine the potential impacts of time cycle on experimental outcomes.
- *  We will use relevant linear mixed models and hypothesis testing methods to determine the effects of different interventions and capture variations by site.
- *  Based on the results above, we will answer the key statistical questions and then give our suggestions for possible  further analysis.
+ *  We will discuss characteristics of the dataset through visualization with appropriate figures and tables, for enhanced insight.
+ *  We will illustrate how to construct models to determine the effects of different interventions and capture variations by site.
+ 
+ The structure of the remainder of this report is as follows. Following a brief description about the dataset in Section 2, EDA analysis are employed in Section 3 to visualize the data and prepare for further analysis. Section 4 illustrates how to develop the generalized least squares (GLS) model with the dataset and address the concerned questions. The conclusion and specific suggestions are given in Section 5.
+ 
 
 
 # Data Summary
