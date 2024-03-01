@@ -33,6 +33,23 @@ Consumer behavior regarding daily beverage choices is widely observed, with zero
  *  We will employ appropriate time series analysis models to determine the potential impacts of time cycle on experimental outcomes.
  *  We will use relevant linear mixed models and hypothesis testing methods to determine the effects of different interventions and capture variations by site.
  *  Based on the results above, we will answer the key statistical questions and then give our suggestions for possible  further analysis.
+ 
+ In the diminishing consumption rate of sugary drinks, health awareness is noticed as playing an imaginable role in reshaping modern dietary habits. This is distinctly apparent in the context of sugary beverage consumption, which often poses health concerns as a result of its association with several health challenges like obesity, diabetes, and tooth decay.
+
+
+By acknowledging the critical nature of this topic, our study aims to explore and evaluate ways to steer consumer behavior toward healthier drink choices effectively. 
+The primary objective of this study is to assess the efficacy of various interventions - a 10% Price Discount on Zero-Calorie Beverages, a 10% Price Discount Plus Explanatory Messaging, Calorie Content Messaging, Physical Activity Equivalent Messaging, Combination of Calorie Content and Physical Activity Equivalent Messaging - in fostering zero-calorie beverage consumption.
+
+While conducted in two urban and one suburban hospital, the study applies an interrupted time-series model to examine the consequence of the interventions, offering a reliable framework for analyzing changes over time.
+
+
+The study aims to answer several statistical questions:
+
+1. Do the interventions significantly influence the sale of zero-calorie and sugary beverages, and which intervention seems most effective?
+2. Does the intervention effectiveness vary between urban and suburban hospital environments?
+3. Does a combination of price discounts and explanatory messaging more substantially influence consumer choices than when applied separately?
+4. How does the impact of calorie-equivalent messaging on consumer beverage selection compare with that of simple calorie information?
+
 
 
 # Data Summary
