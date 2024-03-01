@@ -54,7 +54,7 @@ sale_data <- sale_data %>%
   mutate_at(c('DofW', 'Site', 'Intervention'), as.factor)
 ```
 
-```{r missing-data-plot fig.height=3}
+```{r missing-data-plot, fig.height=3}
 #missing data, overall
 plot_missing_values_proportions(df=sale_data) +
   ggtitle("",subtitle = "Figure 1: The proportion of missing values for all columns in \nthe data set.")
@@ -80,7 +80,7 @@ sale_data_c <- sale_data %>%
 
 To compare the consumption of a selected type of beverages (zero-calorie beverages or sugary beverages) among different intervention types, boxplots with sales in percentage terms as y-axis and with intervention as x-axis can be made (see Figure 3 as an example). Similarly, boxplots can also be used to compare the consumption of a selected type of beverages among days of week to see if there are any patterns.
 
-```{r time-series-plot fig.height=4, fig.width=6}
+```{r time-series-plot, fig.height=4, fig.width=6}
 sale_data_c$Sugary_percent <-
   sale_data_c$Sugary/(sale_data_c$Sugary+sale_data_c$ZeroCal)*100
 sale_data_c$ZeroCal_percent <-
