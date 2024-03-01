@@ -139,6 +139,9 @@ When it comes to the residuals part of each site-specific model, it is suggested
 One limitation of this approach is the challenge in statistically testing the differences in intervention effects across different sites. However, we could still learn differences between sites in a sense that maybe statistically significant effects are detected for some interventions in some sites but not in other sites. 
 
 # Conclusions
+It is recommended to use daily sales in percentage terms as response variable for the analysis, to better represent the relative consumption of zero-calorie and sugared beverages. Besides the tables showing the missingness of the dataset, the time series plots can be displayed to visualize the daily changes of zero-calorie drinks consumption, and the side by side boxplots can illustrate the relationship between the daily sales and various interventions at each site. 
+
+We suggest to implement GLS for each site to capture the association between changes in beverage consumption and the adopted interventions, allowing us to account for the dependence structure of residuals of the model.  Specifically, `Intervention` and `DofW` should serve as the predictor variables. The optimal model for each site can be determined by comparing the AIC across several candidate models, with each model specifying one of four different correlation structures. Differences in the effectiveness of various interventions and sites are identifiable by comparing the coefficients of the final models. 
 
 \newpage
 # References {.unnumbered}
