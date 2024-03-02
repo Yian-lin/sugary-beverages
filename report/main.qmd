@@ -145,6 +145,8 @@ We suggest to implement GLS for each site to capture the association between cha
 
 \newpage
 # References {.unnumbered}
+::: {#refs}
+:::
 
 \newpage
 # Statistical Appendix {.unnumbered}
