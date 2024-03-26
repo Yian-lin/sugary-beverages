@@ -130,7 +130,8 @@ ggplot(data=sale_data_c %>%
 
 
 ## Formal Analysis
-To see which interventions lead to increases in zero-calorie beverages consumption and/or decreases in sugary beverages consumption, it is recommended to use generalized least squares regression (GLS). GLS is similar to linear regression. The key difference is that GLS allows the residuals to be correlated while linear regression assumes that the residuals are independent. For time series data, as the one that we have, observations close to one another may be more likely to be similar than observations that are relatively remote. Therefore, it may not be reasonable to assume that the residuals of a regression model are independent, and so GLS is preferred over linear regression.
+
+To investigate the influence of different interventions on the sales of zero-calorie and sugary beverages across multiple sites, this study employs Generalized Linear Mixed Models (GLMMs). The choice of GLMMs is driven by their capacity to accurately analyze data with a complex structure, such as ours, which involves measurements from multiple locations and incorporates both fixed and random effects within a unified analytical framework.
 
 It is recommended to fit GLS models separately for each of the three sites, with zero-calorie beverages percentage or sugary beverages percentage as the response variable. In addition to the reason mentioned in the second paragraph of section 3, another advantage of using percentage terms over raw sales is that we just need to fit models for either zero-calorie beverages percentage or sugary beverages percentage instead of for both. An increase in zero-calorie beverages percentage implies a decrease in sugary beverages percentage, vice versa.
 
