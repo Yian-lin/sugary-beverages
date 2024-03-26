@@ -24,6 +24,7 @@ library(tidyverse)
 library(rmiss)
 library(knitr)
 library(here)
+library(ggplot2)
 ```
 
 ## Introduction
