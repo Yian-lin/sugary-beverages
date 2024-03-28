@@ -157,10 +157,35 @@ We suggest to implement GLS for each site to capture the association between cha
 In this appendix, we mainly focus on implementing the suggested models to approach the proposed statistical questions, and also provide detailed interpretations for the results. 
 
 ### Model Construction
-To develop a suitable GLMM for this dataset, the primary consideration should be the selection of random effects. The dataset clearly shows significant variability in beverage consumption across the three sites, indicating that incorporating a random intercept for each site in the model is a reasonable approach, which allows the model to capture the variation in beverage consumption attributable to differences among the sites. Another consideration is setting random slopes for intervention within site to allow the effect of interventions to vary across sites, e.g., some interventions might be more effective in certain sites than in others, reflecting the unique contexts or characteristics of those sites. Moreover, the selection of the link function also requires careful consideration. Both the Poisson and the negative binomial link functions are commonly utilized in (GLMMs) when dealing with count data as the response variable. Due to the negative binomial model's additional dispersion parameter, the estimates can be more reliable when the data exhibit overdispersion. However, determining which method aligns more closely with the data's nature requires further analysis. The AIC can be employed to select the most suitable model for the final analysis, providing a quantitative measure to compare the relative quality of different models. Generally, we suggest to construct models with the following formation,
+To develop a suitable GLMM for this dataset, the primary consideration should be the selection of random effects. The dataset clearly shows significant variability in beverage consumption across the three sites, indicating that incorporating a random intercept for each site in the model is a reasonable approach, which allows the model to capture the variation in beverage consumption attributable to differences among the sites. Another consideration is setting random slopes for intervention within site to allow the effect of interventions to vary across sites, e.g., some interventions might be more effective in certain sites than in others, reflecting the unique contexts or characteristics of those sites. Moreover, the selection of the link function also requires careful consideration. Both the Poisson and the negative binomial link functions are commonly utilized in GLMMs when dealing with count data as the response variable. Due to the negative binomial model's additional dispersion parameter, the estimates can be more reliable when the data exhibit overdispersion. However, determining which method aligns more closely with the nature of data requires further analysis. The AIC can be employed to select the most suitable model for the final analysis, providing a quantitative measure to compare the relative quality of different models. Generally, we suggest to construct models with the following formation, 
 
+```{=tex}
+\begin{equation}
+\label{eq2}
+\log(\text{ZeroCal}_{ijs}) = \beta_0 + \beta_1 \cdot \text{Intervention}_{ijs} + \beta_2 \cdot \text{DofW}_{ijs} + \log(\text{Total}_{ijs}) + u_{s}
+\end{equation}
+```
 
- 
+where `ZeroCal` denotes the daily count of zero-calorie beverage, $\beta_0$ is the overall intercept, $\beta_1$ and $\beta_2$ are the fixed effect coefficients of `DofW` and `Intervention`, respectively, and $u_s$ is the random effect for 'Site ' $s$, indicating variation in the log count of zero-calorie that is specific to each site but not explained by `DofW`, `Intervention`, or `Total`. If the goal is to investigate the impact of interventions on the daily count of sugared beverage consumption, the response variable should be directly replaced with the daily count of `sugared`.
+
+### Model Selection
+In this section we evaluate the performance of Poisson model and Negative bimomia model based on the AIC score. The results in \ref{tab2} illustrates the AIC of Negative binomial model is significant lower than that of Poisson model, which implies negative binomial provides a better fits, likely due to potential overdispersion within the count of beverage. Thus, it is suggested to use negative binomial as the final model for further analysis according to this criterion. 
+```{=tex}
+\begin{table}[htbp]
+    \centering
+    \caption{AIC score with different link functions}
+    \label{tab2}
+    \begin{tabular}{ c|c }
+        \hline
+        Model & AIC \\
+        \hline
+        Poisson            & 14875.4 
+        Negative Binomial  & 6916.3
+        \hline
+    \end{tabular}
+\end{table}
+```
+
 
 ```{r}
 # data missingness  by Site
