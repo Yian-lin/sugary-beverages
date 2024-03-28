@@ -6,6 +6,7 @@ format:
   pdf :
     fontsize: 11pt
 number-sections: true
+editor: visual 
 header-includes: 
   \usepackage{caption}
   \newcommand{\beginAppendix}{
@@ -24,6 +25,7 @@ library(tidyverse)
 library(rmiss)
 library(knitr)
 library(here)
+library(tibble)
 ```
 
 ## Introduction
@@ -169,7 +171,8 @@ To develop a suitable GLMM for this dataset, the primary consideration should be
 where `ZeroCal` denotes the daily count of zero-calorie beverage, $\beta_0$ is the overall intercept, $\beta_1$ and $\beta_2$ are the fixed effect coefficients of `DofW` and `Intervention`, respectively, and $u_s$ is the random effect for 'Site ' $s$, indicating variation in the log count of zero-calorie that is specific to each site but not explained by `DofW`, `Intervention`, or `Total`. If the goal is to investigate the impact of interventions on the daily count of sugared beverage consumption, the response variable should be directly replaced with the daily count of `sugared`.
 
 ### Model Selection
-In this section we evaluate the performance of Poisson model and Negative bimomia model based on the AIC score. The results in \ref{tab2} illustrates the AIC of Negative binomial model is significant lower than that of Poisson model, which implies negative binomial provides a better fits, likely due to potential overdispersion within the count of beverage. Thus, it is suggested to use negative binomial as the final model for further analysis according to this criterion. 
+In this section we evaluate the performance of Poisson model and Negative bimomia model based on the AIC score. The results in table \ref{tab2} illustrates the AIC of Negative binomial model is significant lower than that of Poisson model, which implies negative binomial provides a better fits, likely due to potential overdispersion within the count of beverage. Thus, it is suggested to use negative binomial as the final model for further analysis according to this criterion. 
+
 ```{=tex}
 \begin{table}[htbp]
     \centering
@@ -179,13 +182,16 @@ In this section we evaluate the performance of Poisson model and Negative bimomi
         \hline
         Model & AIC \\
         \hline
-        Poisson            & 14875.4 
-        Negative Binomial  & 6916.3
+        Poisson            & 14875.4  \\
+        Negative Binomial  & 6916.3 \\
         \hline
     \end{tabular}
 \end{table}
+
 ```
 
+
+To 
 
 ```{r}
 # data missingness  by Site
