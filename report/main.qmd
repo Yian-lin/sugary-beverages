@@ -157,8 +157,10 @@ We suggest to implement GLS for each site to capture the association between cha
 In this appendix, we mainly focus on implementing the suggested models to approach the proposed statistical questions, and also provide detailed interpretations for the results. 
 
 ### Model Construction
-To develop a suitable Generalized Linear Mixed Model (GLMM) for this dataset, the primary consideration should be the selection of random effects. The dataset clearly shows significant variability in beverage consumption across the three sites, indicating that incorporating a random intercept for each site in the model is a reasonable approach. This adjustment will allow the model to capture the variation in beverage consumption attributable to differences among the sites.
+To develop a suitable GLMM for this dataset, the primary consideration should be the selection of random effects. The dataset clearly shows significant variability in beverage consumption across the three sites, indicating that incorporating a random intercept for each site in the model is a reasonable approach, which allows the model to capture the variation in beverage consumption attributable to differences among the sites. Another consideration is setting random slopes for intervention within site to allow the effect of interventions to vary across sites, e.g., some interventions might be more effective in certain sites than in others, reflecting the unique contexts or characteristics of those sites. Moreover, the selection of the link function also requires careful consideration. Both the Poisson and the negative binomial link functions are commonly utilized in (GLMMs) when dealing with count data as the response variable. Due to the negative binomial model's additional dispersion parameter, the estimates can be more reliable when the data exhibit overdispersion. However, determining which method aligns more closely with the data's nature requires further analysis. The AIC can be employed to select the most suitable model for the final analysis, providing a quantitative measure to compare the relative quality of different models. Generally, we suggest to construct models with the following formation,
 
+
+ 
 
 ```{r}
 # data missingness  by Site
