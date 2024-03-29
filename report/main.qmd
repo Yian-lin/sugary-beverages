@@ -115,29 +115,6 @@ ggplot(data = sale_data_clean, aes(x = Count, group = Site)) +
 ```
 
 
-
-```{r}
-sale_data_c$Sugary_percent <- sale_data_c$Sugary / (sale_data_c$Sugary + sale_data_c$ZeroCal) * 100
-sale_data_c$ZeroCal_percent <- sale_data_c$ZeroCal / (sale_data_c$Sugary + sale_data_c$ZeroCal) * 100
-
-# Plot Daily sales of ZeroCal_percent with the y-axis exactly like the uploaded plot
-ggplot(data = sale_data_c, aes(x = Count, y = ZeroCal_percent, group = Site)) +
-  geom_line(aes(color = Intervention)) + 
-  geom_point(aes(color = Intervention), size = 1) + 
-  scale_color_viridis_d() + 
-  facet_wrap(~ Site, ncol = 1, scales = "free_y") +
-  xlab("Day") +
-  ylab("Daily percentage of zero-calorie beverages sales (%)") +
-  theme_minimal(base_size = 12) + 
-  theme(legend.position = "right", 
-        text = element_text(size = 12), 
-        axis.text = element_text(size = 10), 
-        axis.title = element_text(size = 12),
-        legend.text = element_text(size = 10)) +
-  ggtitle("Figure 2: Daily percentage of zero-calorie beverages sales over time for \neach of the three sites")
-```
-
-
 ```{r}
 ggplot(data = sale_data_c %>% 
          filter(Intervention_new != "wash" & Intervention_new != "wash2"), 
@@ -153,85 +130,8 @@ ggplot(data = sale_data_c %>%
 ```
 
 
-```{r}
-ggplot(data = sale_data_c %>% 
-         filter(Intervention_new != "wash" & Intervention_new != "wash2"), 
-       aes(x = Intervention_new, y = ZeroCal_percent)) +
-  geom_boxplot(outlier.colour = "red", outlier.shape = 1) +  
-  facet_wrap(~ Site, ncol = 3, scales = "free_y") +
-  xlab("Intervention") +
-  ylab("Daily percentage of zero-calorie \nbeverages sales (%)") +
-  ggtitle("Figure 3: Boxplots of daily percentage of zero-calorie \nbeverages sales for each of the three sites") +
-  theme_minimal(base_size = 14) +  
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
-        plot.title = element_text(hjust = 0.5),  
-        plot.subtitle = element_text(hjust = 0.5),  
-        axis.title = element_text(size = 14), 
-        axis.text = element_text(size = 12))  
-
-```
-
-
 ## ADDITION
-```{r}
-# Filter the data for only the "chop" site
-chop_data <- sale_data_c %>% 
-  filter(Site == "chop")
 
-# Create a histogram for ZeroCal at the "chop" site
-ggplot(chop_data, aes(x = ZeroCal)) + 
-  geom_histogram(binwidth = 10, color = "white") +  # Adjust binwidth as appropriate
-  labs(x = "Zero-Calorie Count", y = "Frequency", title = "Chop Site") +
-  theme_minimal()
-
-# Filter the data for only the "HF" site
-hf_data <- sale_data_c %>% 
-  filter(Site == "HF")
-
-# Create a histogram for ZeroCal at the "HF" site
-ggplot(hf_data, aes(x = ZeroCal)) + 
-  geom_histogram(binwidth = 10, fill = "green", color = "black") +  # Adjust binwidth as appropriate
-  labs(x = "Zero-Calorie Count", y = "Frequency", title = "HF Site") +
-  theme_minimal()
-
-ns_data <- sale_data_c %>%
-  filter(Site == "NS")
-
-# Create a histogram for ZeroCal at the "NS" site
-ggplot(ns_data, aes(x = ZeroCal)) +
-  geom_histogram(binwidth = 10, fill = "purple", color = "black") +  # Adjust binwidth as needed
-  labs(x = "Zero-Calorie Count", y = "Frequency", title = "NS Site") +
-  theme_minimal()
-
-# Filter the data for only the "chop" site
-chop_data_sugary <- sale_data_c %>%
-  filter(Site == "chop")
-
-# Create a histogram for Sugary at the "chop" site
-ggplot(chop_data_sugary, aes(x = Sugary)) +
-  geom_histogram(binwidth = 10, fill = "orange", color = "black") +  # Adjust binwidth as needed
-  labs(x = "Sugary Count", y = "Frequency", title = "Chop Site") +
-  theme_minimal()
-
-hf_data_sugary <- sale_data_c %>%
-  filter(Site == "HF")
-
-# Create a histogram for Sugary at the "HF" site
-ggplot(hf_data_sugary, aes(x = Sugary)) +
-  geom_histogram(binwidth = 10, fill = "green", color = "black") +  # Adjust binwidth as needed
-  labs(x = "Sugary Count", y = "Frequency", title = "HF Site") +
-  theme_minimal()
-
-# Filter the data for only the "NS" site
-ns_data_sugary <- sale_data_c %>%
-  filter(Site == "NS")
-
-# Create a histogram for Sugary at the "NS" site
-ggplot(ns_data_sugary, aes(x = Sugary)) +
-  geom_histogram(binwidth = 10, fill = "blue", color = "black") +  # Adjust binwidth as needed
-  labs(x = "Sugary Count", y = "Frequency", title = "NS Site") +
-  theme_minimal()
-```
 
 
 
@@ -249,26 +149,6 @@ ggplot(combined_data, aes(x = Count)) +
 ```
 
 
-
-
-# model
-```{r}
-sale_data_c$Intervention_updated <- as.factor(sale_data_c$Intervention)
-sale_data_c$DofW_updated <- as.factor(ifelse(sale_data_c$DofW %in% c("Saturday", "Sunday"), "Weekend", "Weekday"))
-
-# Fit the Poisson mixed effect model
-# Replace ZeroCal with Sugary if you are modeling Sugary beverage counts
-poisson_model <- glmer(ZeroCal ~ Intervention_updated + DofW_updated + (1|Site), 
-                       data = sale_data_c, family = poisson())
-
-# Check the summary of the model
-summary(poisson_model)
-```
-
-
-```{r}
-unique(sale_data_c$Intervention)
-```
 
 ## Formal Analysis
 To see which interventions lead to increases in zero-calorie beverages consumption and/or decreases in sugary beverages consumption, it is recommended to use generalized least squares regression (GLS). GLS is similar to linear regression. The key difference is that GLS allows the residuals to be correlated while linear regression assumes that the residuals are independent. For time series data, as the one that we have, observations close to one another may be more likely to be similar than observations that are relatively remote. Therefore, it may not be reasonable to assume that the residuals of a regression model are independent, and so GLS is preferred over linear regression.
