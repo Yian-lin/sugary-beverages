@@ -176,22 +176,41 @@ In this section we evaluate the performance of Poisson model and Negative bimomi
 ```{=tex}
 \begin{table}[htbp]
     \centering
-    \caption{AIC score with different link functions}
+    \caption{AIC score under different link functions}
     \label{tab2}
     \begin{tabular}{ c|c }
-        \hline
+        \toprule
         Model & AIC \\
-        \hline
+        \midrule
         Poisson            & 14875.4  \\
         Negative Binomial  & 6916.3 \\
-        \hline
+        \bottomrule
     \end{tabular}
 \end{table}
 
 ```
 
 
-To 
+### Results analysis
+By fitting the negative binomial GLMM for daily count of zero-calorie beverages, the estimated fixed effect coefficients are shown in table \ref{tab3}. 
+```{=tex}
+\begin{table}[htbp]
+\centering
+\caption{The fixed effect coefficients of zero-calorie}
+\label{tab3}
+\begin{tabular}{c|c|c|c}
+\toprule
+Intervention & {Estimate} & {Standard Error} & {p-Value}\\
+\midrule
+Discount                                & 0.085  & 0.048  & 0.075 \\
+Discount \& Explanatory messaging       & 0.328 & 0.048 &   0.000 \\
+Calorie information                       & -0.081  & 0.047  & 0.090\\
+Exercise information                  & -0.086  & 0.049  &   0.078\\
+Calorie \& Exercise information.      & -0.137 & 0.048  &    0.004 \\
+\bottomrule
+\end{tabular}
+\end{table}
+```
 
 ```{r}
 # data missingness  by Site
