@@ -164,11 +164,11 @@ To develop a suitable GLMM for this dataset, the primary consideration should be
 ```{=tex}
 \begin{equation}
 \label{eq2}
-\log(\text{ZeroCal}_{ijs}) = \beta_0 + \beta_1 \cdot \text{Intervention}_{ijs} + \beta_2 \cdot \text{DofW}_{ijs} + \log(\text{Total}_{ijs}) + u_{s}
+\log(\text{ZeroCal}_{ijs}) = \beta_0 + \beta_1 \cdot \text{Intervention}_{ijs} + \beta_2 \cdot \text{DofW}_{ijs} + \beta_3 \cdot \log(\text{Total}_{ijs}) + u_{s}
 \end{equation}
 ```
 
-where `ZeroCal` denotes the daily count of zero-calorie beverage, $\beta_0$ is the overall intercept, $\beta_1$ and $\beta_2$ are the fixed effect coefficients of `DofW` and `Intervention`, respectively, and $u_s$ is the random effect for 'Site ' $s$, indicating variation in the log count of zero-calorie that is specific to each site but not explained by `DofW`, `Intervention`, or `Total`. If the goal is to investigate the impact of interventions on the daily count of sugared beverage consumption, the response variable should be directly replaced with the daily count of `sugared`.
+where `ZeroCal` denotes the daily count of zero-calorie beverage, $\beta_0$ is the overall intercept, $\beta_1$ and $\beta_2$ are the fixed effect coefficients of `DofW` and `Intervention`, respectively, and $u_s$ is the random effect for `Site`, indicating variation in the log count of zero-calorie that is specific to each site but not explained by `DofW`, `Intervention`, or `Total`. If the goal is to investigate the impact of interventions on the daily count of sugared beverage consumption, the response variable should be directly replaced with the daily count of `sugared`.
 
 ### Model Selection
 In this section we evaluate the performance of Poisson model and Negative bimomia model based on the AIC score. The results in table \ref{tab2} illustrates the AIC of Negative binomial model is significant lower than that of Poisson model, which implies negative binomial provides a better fits, likely due to potential overdispersion within the count of beverage. Thus, it is suggested to use negative binomial as the final model for further analysis according to this criterion. 
@@ -192,7 +192,7 @@ In this section we evaluate the performance of Poisson model and Negative bimomi
 
 
 ### Results analysis
-By fitting the negative binomial GLMM for daily count of zero-calorie beverages, the estimated fixed effect coefficients are shown in table \ref{tab3}. 
+By fitting the negative binomial GLMM for daily count of zero-calorie beverages, the estimated fixed effect coefficients are shown in table \ref{tab3}. The interventions are incorporated as fixed effects in the model to quantify the average impact of various interventions on beverage consumption. The results indicate that only the combination of discounts and relevant explanatory messages significantly promotes the consumption of zero-calorie beverages, comparing to the baseline (pre-intervention). Conversely, providing calorie information alongside exercise details appears to have a somewhat negative effect on consumption.
 ```{=tex}
 \begin{table}[htbp]
 \centering
@@ -200,13 +200,49 @@ By fitting the negative binomial GLMM for daily count of zero-calorie beverages,
 \label{tab3}
 \begin{tabular}{c|c|c|c}
 \toprule
-Intervention & {Estimate} & {Standard Error} & {p-Value}\\
+Intervention & {Estimate} & {Standard Error} & {p-value}\\
 \midrule
 Discount                                & 0.085  & 0.048  & 0.075 \\
 Discount \& Explanatory messaging       & 0.328 & 0.048 &   0.000 \\
 Calorie information                       & -0.081  & 0.047  & 0.090\\
 Exercise information                  & -0.086  & 0.049  &   0.078\\
 Calorie \& Exercise information.      & -0.137 & 0.048  &    0.004 \\
+\bottomrule
+\end{tabular}
+\end{table}
+```
+On the other hand, site is treated as a random effect on intercept of the model, with an estimated variance of 0.105 and a standard deviation of 0.324, which indicates a moderate level of variation in the baseline counts of zero-calorie beverages across different sites. The similar models can developed for the count of sugared beverages. 
+
+Another important statistical question is to determine if the effects of different interventions varying by sites. A potential approach to address this issue is by introducing site as random effects on interventions. However, models structured in this manner often struggle to achieve convergence, making it challenging to obtain reliable results. A viable alternative approach is to incorporate an interaction term between site and intervention, which allows for assessing how the effect of interventions varies across different sites. Specifically, we can construct an alternative model with the formation as
+
+```{=tex}
+\begin{equation}
+\label{eq2}
+\log(\text{ZeroCal}) = \beta_0 + \beta_1 \cdot \text{Intervention \times Site} + \beta_2 \cdot \text{DofW} + \beta_3 \cdot \log(\text{Total})
+\end{equation}
+```
+
+The estimates of each interaction pair of intervention and site are displayed in \ref{tab4}, where the interaction items with \textbf{chop} (the name of one of sites) are treated as reference category. The results show that the effects of the interventions significantly differ by sites, indicating that the impact of each intervention varies depending on the location, which could be related to the unique circumstances of each site.
+
+```{=tex}
+\begin{table}[htbp]
+\centering
+\caption{The interactions between intervention and site}
+\label{tab4}
+\begin{tabular}{c|c|c|c}
+\toprule
+Interaction & {Estimate} & {Standard Error} & {p-value}\\
+\midrule
+HF \times Discount                                & 0.296  & 0.098  & 0.003 * \\
+NS \times Discount                                & -0.135  & 0.102  & 0.187 \\
+HF \times (Discount \& Explanatory messaging)       & 0.203 & 0.098 &   0.003 *\\
+NS \times (Discount \& Explanatory messaging)       & 0.574 & 0.102 &   0.000 *\\
+HF \times Calorie information                       & -0.125  & 0.099  & 0.204\\
+NS \times Calorie information                       & -0.243  & 0.102  & 0.017 *\\
+HF \times Exercise information                  & -0.225  & 0.100  &   0.025*\\
+NS \times Exercise information                  & -0.205  & 0.104  &   0.048 *\\
+HF \times (Calorie \& Exercise information)      & -0.375 & 0.100  &    0.000 * \\
+NS \times (Calorie \& Exercise information)      & -0.242 & 0.102  &    0.018 *\\
 \bottomrule
 \end{tabular}
 \end{table}
