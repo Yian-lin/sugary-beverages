@@ -61,7 +61,7 @@ sale_data <- sale_data %>%
   mutate_at(c('DofW', 'Site', 'Intervention'), as.factor)
 ```
 
-```{r missing-data-plot, fig.height=3, fig.cap= "The proportion of missing values for all columns in the dataset."}
+```{r missing-data-plot, fig.height=3, fig.cap= "The proportion of missing values for all variables in the dataset."}
 #missing data, overall
 plot_missing_values_proportions(df=sale_data) 
 #  ggtitle("", subtitle = "Figure 1: The proportion of missing values for all columns in \nthe dataset.")
@@ -255,7 +255,7 @@ NS \times (Calorie \& Exercise information)      & -0.242 & 0.102  & \@{} \@{}  
 
 ### Model checking
 
-After fitting the models, it's crucial to check the assumptions and evaluate the fit. First of all, it's essential to verify that the chosen Negative binomial GLMM adequately reflects the characteristics of the data, even though the AIC score suggests it provides a better fit. According to the outputs of model, the dispersion parameter for the negative binomial distribution is 14, which indicates that there is considerable overdispersion within count data, and thus, the negative binomial model is more appropriate than a Poisson model. On the other hand, we check the normality assumption about residual, the Q-Q plot below suggests that the residuals mostly adhere to the normal distribution assumption, although there are some observable deviations. These devations could be attributed to outliers within the data. The Residuals vs. Predicted plot indicates that the model might not be fully adequate for the data because deviation between actual and predicted quantile, which can be further investigated and improved. 
+After fitting the models, it's crucial to check the assumptions and evaluate the fit. First of all, it's essential to verify that the chosen Negative binomial GLMM adequately reflects the characteristics of the data, even though the AIC score suggests it provides a better fit. According to the outputs of model, the dispersion parameter for the negative binomial distribution is 14, which indicates that there is considerable overdispersion within count data, and thus, the negative binomial model is more appropriate than a Poisson model. On the other hand, we check the normality assumption about residual, the Q-Q plot in Fugure 4 suggests that the residuals mostly adhere to the normal distribution assumption, although there are some observable deviations. These deviations could be attributed to outliers within the data. The residuals versus the predicted plot indicates that the model might not be fully adequate for the data because deviation between actual and predicted quantile, which can be further investigated and improved. As for the model (2), the Q-Q plot in Figure 5 indicates that the residuals exhibit a significant deviation from the normality. Moreover, the patterns observed in the residuals versus the predicted plot suggest that the developed model could be inappropriate for the data. 
 ```{r}
 
 sale_data <- sale_data[complete.cases(sale_data[,c("ZeroCal", "Sugary")]), ]
@@ -274,6 +274,7 @@ nb_intercept_model <- glmmTMB(ZeroCal ~ DofW + Intervention + log(Total) + (1|Si
 simulated_residuals <- simulateResiduals(fittedModel = nb_intercept_model)
 plot(simulated_residuals)
 ```
+
 ```{r,fig.width=8, fig.height=4.5, fig.cap= "Diagnostics for model with interaction between site and intervention."}
 model_with_interaction <- glmmTMB(ZeroCal ~ DofW + log(Total + 1) +   Site * Intervention, 
                                   data = sale_data, 
