@@ -256,6 +256,10 @@ NS \times (Calorie \& Exercise information)      & -0.242 & 0.102  & \@{} \@{}  
 ### Model checking
 
 After fitting the models, it's crucial to check the assumptions and evaluate the fit. First of all, it's essential to verify that the chosen Negative binomial GLMM adequately reflects the characteristics of the data, even though the AIC score suggests it provides a better fit. According to the outputs of model, the dispersion parameter for the negative binomial distribution is 14, which indicates that there is considerable overdispersion within count data, and thus, the negative binomial model is more appropriate than a Poisson model. On the other hand, we check the normality assumption about residual, the Q-Q plot in Fugure 4 suggests that the residuals mostly adhere to the normal distribution assumption, although there are some observable deviations. These deviations could be attributed to outliers within the data. The residuals versus the predicted plot indicates that the model might not be fully adequate for the data because deviation between actual and predicted quantile, which can be further investigated and improved. As for the model (2), the Q-Q plot in Figure 5 indicates that the residuals exhibit a significant deviation from the normality. Moreover, the patterns observed in the residuals versus the predicted plot suggest that the developed model could be inappropriate for the data. 
+
+### Discussion
+
+
 ```{r}
 
 sale_data <- sale_data[complete.cases(sale_data[,c("ZeroCal", "Sugary")]), ]
@@ -283,7 +287,7 @@ simulation_output <- simulateResiduals(fittedModel = model_with_interaction)
 plot(simulation_output)
 ```
 
-### Discussion
+
 ```{r}
 # data missingness  by Site
 count_missing<- sale_data %>%
