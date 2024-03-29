@@ -40,11 +40,11 @@ The statistical questions of interest are :
 The  remainder of this report is as follows. Following a brief description about the dataset in Section 2, suggestions on exploratory data analysis (EDA) are presented in Section 3. Section 4 applies formal analysis methods, and Section 5 summarizes our recommendations.
 
 ## Data Summary
-This is a quasi-experimental study to investigate the effects of five interventions on consumer inclination towards zero-calorie beverages. The dataset contains the daily sales of different types of beverages (including zero-calorie, sugared and others) under various interventions across three sites, from October 27 to May 23. In this study, the daily sales of each type of beverage are used for measuring the consumers’ preference on this type of beverage. The crucial variables are the daily sales of zero-calorie beverages, sugared beverages and total of all the beverages, which are measured as continuous data. On the other hand, based on the objectives of the study, the site and intervention are to be treated as categorical variables for further analysis, and the days of week are also recorded as a categorical variable to determine potential impacts of time on the outcomes. Additionally, the dataset includes a time-counting variable that captures the timeline of the entire experiment, indicating that each site has around 220 time points. For the entire dataset, the records of these key variables are relatively complete, with sugared and zero-calorie beverages having nine observations missing. However, records for other types of beverages show a certain proportion of missing data, which could be because they are not the items of interest and excluded in recording.
+This is a quasi-experimental study to investigate the effects of five interventions on consumer inclination towards zero-calorie beverages. The dataset contains the daily sales of different types of beverages (including zero-calorie, sugared and others) under various interventions across three sites, from October 27 to May 23. In this study, the daily sales of each type of beverage are used for measuring the consumers’ preference on this type of beverage. The crucial variables are the daily sales of zero-calorie beverages, sugared beverages and total of all the beverages, which are measured as discrete count. On the other hand, based on the objectives of the study, the site and intervention are to be treated as categorical variables for further analysis, and the days of week are also recorded as a categorical variable to determine potential impacts of time on the outcomes. Additionally, the dataset includes a time-counting variable that captures the timeline of the entire experiment, indicating that each site has around 220 time points. For the entire dataset, the records of these key variables are relatively complete, with sugared and zero-calorie beverages having nine observations missing. However, records for other types of beverages show a certain proportion of missing data, which could be because they are not the items of interest and excluded in recording.
 
 
 ## Exploratory Data Analysis
-Before doing any analysis, it is important to first assess data missingness. A graph (like Figure 1) can be drawn to visualize the proportion of missing values for all columns in the dataset. If there are missing data, it is suggested  a table be created to show the data missingness by Site for columns that have missing data (see Table 1). To see site by site which intervention type has the missing data, an expanded table can be made to show the data missingness by `Site` and `Intervention` for columns with missing data (see Table A1 in Appendix). For columns to  be used in the analysis to answer the research question, it is important to find out why the data are missing.
+Before doing any analysis, it is important to first assess data missingness. A graph (like Figure 1) can be drawn to visualize the proportion of missing values for all columns in the dataset. If there are missing data, it is suggested a table be created to show the data missingness by Site for columns that have missing data (see Table 1). To see site by site which intervention type has the missing data, an expanded table can be made to show the data missingness by `Site` and `Intervention` for columns with missing data (see Table A1 in Appendix). For columns to  be used in the analysis to answer the research question, it is important to find out why the data are missing.
 \
 ```{r}
 sale_data <- read.table(here("rawdata/june1data.csv"), head=T, sep=",")
@@ -74,8 +74,8 @@ count_missing<- sale_data %>%
 kable(count_missing, caption = "Number of missing observations for columns with missing data present by site")
 ```
 
-To explore the change of daily sales of zero-calorie beverages and bottled sugared beverages over time, time series plot for `ZeroCal` and `Sugary` can be made for each of the three sites. It is important to note that the increase in the raw counts of say zero-calorie beverages being sold does not necessarily mean the decrease in the sales of sugared beverages. It could be the case that more customers came to the shops that day so that sales of all things tended to be higher. Therefore, in addition to visualize the change of daily sales using the raw counts, it is even more important to explore the change of daily sales in percentage terms (i.e. zero-calorie /(zero-calorie + sugary-beverage)\*100\% and sugary-beverage / (zero-calorie + sugary-beverage)\*100\%)
-(see Figure 2 as an example). Change in the zero-calorie beverages percentage can better represent the change in zero-calorie beverages consumption relative to the sugared beverages consumption, and vice versa. 
+To explore the change of daily sales of zero-calorie beverages and bottled sugared beverages over time, time series plot for `ZeroCal` and `Sugary` can be made for each of the three sites. It is important to note that the increase in the raw counts of say zero-calorie beverages being sold does not necessarily mean the decrease in the sales of sugared beverages. It could be the case that more customers came to the shops that day so that sales of all things tended to be higher. Therefore, in addition to visualize the change of daily sales using the raw counts, focusing on raw counts instead of percentage offers tangible and more direct measures as it simplifies interpretation of data for assessing consumer behaviour and intervention efficacy (see Figure 2 as an example).
+
 
 ```{r}
 # delete rows with missing data in both ZeroCal and Sugary
@@ -83,15 +83,9 @@ sale_data_c <- sale_data %>%
   filter(!(is.na(ZeroCal) | is.na(Sugary)))
 ```
 
-To compare the consumption of a selected type of beverages (zero-calorie beverages or sugary beverages) under different `intervention` categories, boxplots with sales in percentage terms as y-axis and with `intervention` as x-axis can be made (see Figure 3 as an example). Similarly, boxplots can also be used to compare the consumption of a selected type of beverages among days of week to see if there are any patterns.
+To compare the consumption of a selected type of beverages (zero-calorie beverages or sugary beverages) under different `intervention` categories, boxplots with sales terms as y-axis and with `intervention` as x-axis can be made (see Figure 3 as an example). Similarly, boxplots can also be used to compare the consumption of a selected type of beverages among days of week to see if there are any patterns.
 \
 
-```{r}
-install.packages(multcomp)
-```
-
-
-## ADDITIONS
 ```{r}
 # Filter out rows with missing data in ZeroCal and Sugary columns
 sale_data_clean <- sale_data %>%
@@ -113,28 +107,8 @@ ggplot(data = sale_data_clean, aes(x = Count, group = Site)) +
         axis.text = element_text(size = 10), 
         axis.title = element_text(size = 12),
         legend.text = element_text(size = 10)) +
-  ggtitle("Daily sales count of beverages over time for each of the three sites")
+  ggtitle("FIGURE 3: Daily sales count of beverages over time for \neach of the three sites")
 ```
-
-
-```{r}
-ggplot(data = sale_data_c %>% 
-         filter(Intervention_new != "wash" & Intervention_new != "wash2"), 
-       aes(x = Intervention_new, y = ZeroCal)) + 
-  geom_boxplot(outlier.colour = "red", outlier.shape = 1) +
-  facet_wrap(~ Site, ncol = 3, scales = "free_y") + 
-  xlab("Intervention") + 
-  ylab("Daily sales count of zero-calorie beverages") +
-  ggtitle("", subtitle = "Figure 3: Boxplots of daily sales count of zero-calorie beverages \nfor each of the three sites") + 
-  theme_minimal(base_size = 14) +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-
-```
-
-
-## ADDITION
-
-
 
 
 ```{r}
@@ -146,7 +120,7 @@ combined_data <- sale_data_c %>%
 ggplot(combined_data, aes(x = Count)) +
   geom_histogram(binwidth = 16, fill = "skyblue", color = "black") +
   facet_grid(ProductType ~ Site, scales = "free") +
-  labs(x = "Count", y = "Frequency") +
+  labs(x = "Count", y = "Frequency", title = "FIGURE 4: Histogram of sales count for the two beverages across the sites.") +
   theme_minimal()
 ```
 
@@ -187,3 +161,34 @@ count_missing<- sale_data %>%
 kable(count_missing, caption = "Number of missing observations for columns with missing data present by site and intervention type.")
  
 ```
+
+
+
+```{r}
+sale_data_c$Intervention_new <- sale_data_c$Intervention
+
+# Replace "preint" with "preint2" and "follow" with "follow2"
+levels(sale_data_c$Intervention_new) <- c(levels(sale_data_c$Intervention_new), "preint2", "follow2") 
+sale_data_c <- sale_data_c %>%
+  mutate(Intervention_new = replace(Intervention_new, Count >= 110 & Intervention_new == "preint", "preint2"),
+         Intervention_new = replace(Intervention_new, Count >= 110 & Intervention_new == "follow", "follow2"))
+
+# Reorder the levels
+sale_data_c$Intervention_new <- fct_relevel(sale_data_c$Intervention_new,
+                                            c("preint", "dismes", "dis", "follow", "preint2", "cal", "excer", "both", "follow2", "wash", "wash2"))
+
+# Boxplots using raw sales counts for ZeroCal 
+ggplot(data = sale_data_c %>% 
+         filter(Intervention_new != "wash" & Intervention_new != "wash2"), 
+       aes(x = Intervention_new, y = ZeroCal)) + 
+  geom_boxplot(outlier.colour = "red", outlier.shape = 1) +
+  facet_wrap(~ Site, ncol = 3, scales = "free_y") + 
+  xlab("Intervention") + 
+  ylab("Daily sales count of zero-calorie beverages") +
+  ggtitle("", subtitle = "Figure 3: Boxplots of daily sales count of zero-calorie beverages \nfor each of the three sites") + 
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+
+
