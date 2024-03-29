@@ -192,7 +192,7 @@ In this section we evaluate the performance of Poisson model and Negative bimomi
 
 
 ### Results analysis
-By fitting the negative binomial GLMM for daily count of zero-calorie beverages, the estimated fixed effect coefficients are shown in table \ref{tab3}. The interventions are incorporated as fixed effects in the model to quantify the average impact of various interventions on beverage consumption. The results indicate that only the combination of discounts and relevant explanatory messages significantly promotes the consumption of zero-calorie beverages, comparing to the baseline (pre-intervention). Conversely, providing calorie information alongside exercise details appears to have a somewhat negative effect on consumption.
+By fitting the negative binomial GLMM for daily count of zero-calorie beverages, the estimated fixed effect coefficients are shown in table \ref{tab3}. The interventions are incorporated as fixed effects in the model to quantify the average impact of various interventions on beverage consumption. The results indicate that only the combination of discounts and relevant explanatory messages significantly promotes the consumption of zero-calorie beverages, comparing to the baseline (pre-intervention). Conversely, providing calorie information alongside exercise details appears to have a somewhat negative effect on consumption. Meanwhile, the most ff coefficients of `DofW` are not significant,indicating that the daily consumption of beverages is not strongly associated with the day of the week.
 ```{=tex}
 \begin{table}[htbp]
 \centering
@@ -248,6 +248,9 @@ NS \times (Calorie \& Exercise information)      & -0.242 & 0.102  &    0.018 *\
 \end{table}
 ```
 
+### Model checking
+
+After fitting the models, it's crucial to check the assumptions and evaluate the fit.
 ```{r}
 # data missingness  by Site
 count_missing<- sale_data %>%
