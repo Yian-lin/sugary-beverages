@@ -1,7 +1,7 @@
 ---
 title: Comparing intervention effects on zero-calorie beverages consumption
 author: Yian Lin, Haibo Wu, Wakeel Adekunle Kasali
-date: 2024-03-01
+date: 2024-03-29
 format: 
   pdf :
     fontsize: 11pt
@@ -37,21 +37,19 @@ Sugary beverage consumption poses health concerns because of its association wit
 
 The statistical questions of interest are : 
 
-1. Do the interventions significantly influence the sales of zero-calorie and sugary beverages?.
-2. Which interventions are more effective? Specifically, does the combination of interventions lead to larger effects? Does presenting calorie-equivalent messaging have larger impacts than presenting the simple calorie admonishment?
-3. Does the effectiveness of different interventions vary between sites?.
+1. Whether these interventions significantly influence the consumption of zero-calorie and sugary beverages;
+2. How to determine which interventions are more effective, and specifically, whether the combination of interventions lead to larger effects;
+3. If the effectiveness of different interventions vary between sites.
 
-The  remainder of this report is as follows. Following a brief description about the dataset in Section 2, suggestions on exploratory data analysis (EDA) are presented in Section 3. Section 4 applies formal analysis methods, and Section 5 summarizes our recommendations.
+The  remainder of this report is as follows. Following a brief description about the dataset in Section 2, suggestions on exploratory data analysis (EDA) are presented in Section 3. Section 4 applies formal analysis methods, and Section 5 summarizes our recommendations. The detailed analysis is shown in Appendix.
 
 ## Data Summary
 This is a quasi-experimental study to investigate the effects of five interventions  on consumer inclination towards zero-calorie beverages. The dataset contains the daily sales of different types of beverages (including zero-calorie, sugared and others) under various interventions across three sites, from October 27 to May 23. In this study, the daily sales of each type of beverage are used for measuring the consumers' preference on this type of beverage. The crucial variables are the daily sales of zero-calorie beverages, sugared beverages and total of all the beverages, which are measured as discrete count. On the other hand, based on the objectives of the study, the site and intervention are to be treated as categorical variables for further analysis, and the days of week are also recorded as a categorical variable to determine potential impacts of time on the outcomes. Additionally, the dataset includes a time-counting variable that captures the timeline of the entire experiment, indicating that each site has around 220 time points. For the entire dataset, the records of these key variables are relatively complete, with sugared and zero-calorie beverages having nine observations missing. However, records for other types of beverages show a certain proportion of missing data, which could be because they are not the items of interest and excluded in recording.
 
 ## Exploratory Data Analysis
 
-Before doing any analysis, it is important to first assess data missingness. A graph (like Figure 1) can be drawn to visualize the proportion of missing values for all columns in the dataset. If there are missing data, it is suggested a table be created to show the data missingness by Site for columns that have missing data (see Table 1). To see site by site which intervention type has the missing data, an expanded table can be made to show the data missingness by `Site` and `Intervention` for columns with missing data (see Table A1 in Appendix). For columns to  be used in the analysis to answer the research question, it is important to find out why the data are missing. 
+Before doing any analysis, it is important to first assess data missingness. A graph (like Figure 1) can be drawn to visualize the proportion of missing values for all columns in the dataset. If there are missing data, it is suggested a table be created to show the data missingness by Site for variables that have missing data (see Table 1). To see site by site which intervention type has the missing data, an expanded table can be made to show the data missingness by `Site` and `Intervention` for variables with missing data. For crucial variables to be used in the analysis to answer the research questions, it is important to find out why the data are missing. To explore the change of daily sales of zero-calorie beverages and bottled sugared beverages over time, a time series plot for daily count of `zero-calorie` beverages and `sugary` beverages can be made for each of the three sites (see Figure 2). To compare the consumption of a selected type of beverages (zero-calorie beverages or sugary beverages) under different `intervention` categories, boxplots with sales in count terms as y-axis and with `intervention` as x-axis can be made (see Figure 3 as an example). Similarly, boxplots can also be used to compare the consumption of a selected type of beverages among days of week to see if there are any patterns.
 
-To explore the change of daily sales of zero-calorie beverages and bottled sugared beverages over time, time series plot for `ZeroCal` and `Sugary` can be made for each of the three sites. It is important to note that the increase in the raw counts of say zero-calorie beverages being sold does not necessarily mean the decrease in the sales of sugared beverages. It could be the case that more customs came to the shops that day so that sales of all things tended to be higher. Therefore, in addition to visualize the change of daily sales using the raw counts, it is even more important to explore the change of daily sales in percentage terms (i.e. `ZeroCal`/(`ZeroCal`+`Sugary`)\*100\% and `Sugary`/(`ZeroCal`+`Sugary`)\*100\%)
-(see Figure 2 as an example). Change in the zero-calorie beverages percentage can better represent the change in zero-calorie beverages consumption relative to the sugared beverages consumption, and vice versa. 
 \
 ```{r}
 sale_data <- read.table(here("rawdata/june1data.csv"), head=T, sep=",")
@@ -65,12 +63,6 @@ sale_data <- sale_data %>%
   mutate_at(c('DofW', 'Site', 'Intervention'), as.factor)
 ```
 
-```{r missing-data-plot, fig.height=3, fig.cap= "The proportion of missing values for all variables in the dataset."}
-#missing data, overall
-plot_missing_values_proportions(df=sale_data) 
-#  ggtitle("", subtitle = "Figure 1: The proportion of missing values for all columns in \nthe dataset.")
-```
-
 ```{r missing-data-table}
 # data missingness  by Site
 count_missing<- sale_data %>%
@@ -81,22 +73,20 @@ count_missing<- sale_data %>%
 kable(count_missing, caption = "Number of missing observations for columns with missing data present by site")
 ```
 
-
-
-
+```{r missing-data-plot, fig.height=2.5, fig.cap= "The proportion of missing values for all variables in the dataset."}
+#missing data, overall
+plot_missing_values_proportions(df=sale_data) 
+#  ggtitle("", subtitle = "Figure 1: proportion of values missing for all columns in \n the dataset.")
+```
 ```{r}
-# delete rows with missing data in both ZeroCal and Sugary
 sale_data_c <- sale_data %>%
   filter(!(is.na(ZeroCal) | is.na(Sugary)))
 ```
-
-To compare the consumption of a selected type of beverages (zero-calorie beverages or sugary beverages) under different `intervention` categories, boxplots with sales in count terms as y-axis and with `intervention` as x-axis can be made (see Figure 3 as an example). Similarly, boxplots can also be used to compare the consumption of a selected type of beverages among days of week to see if there are any patterns.
 \
 ```{r time-series-plot, fig.height=3, fig.width=6, fig.cap= "Daily count of zero-calorie beverages sales over time for each of the three sites."}
 sale_data_clean <- sale_data %>%
   filter(!is.na(ZeroCal) & !is.na(Sugary))
 
-# Now we create the time series plot using raw sales counts
 ggplot(data = sale_data_clean, aes(x = Count, group = Site)) +
   geom_line(aes(y = ZeroCal, color = Intervention)) + 
   geom_point(aes(y = ZeroCal, color = Intervention), size = 1) + 
@@ -118,7 +108,6 @@ ggplot(data = sale_data_clean, aes(x = Count, group = Site)) +
 ```{r boxplot, fig.height=2.5, fig.width=5, fig.cap= "Boxplots of daily percentage of zero-calorie beverages sales for each of the three sites."}
 sale_data_c$Intervention_new <- sale_data_c$Intervention
 
-# Replace "preint" with "preint2" and "follow" with "follow2"
 levels(sale_data_c$Intervention_new) <- c(levels(sale_data_c$Intervention_new), "preint2", "follow2") 
 sale_data_c <- sale_data_c %>%
   mutate(Intervention_new = replace(Intervention_new, Count >= 110 & Intervention_new == "preint", "preint2"),
@@ -128,21 +117,22 @@ sale_data_c <- sale_data_c %>%
 sale_data_c$Intervention_new <- fct_relevel(sale_data_c$Intervention_new,
                                             c("preint", "dismes", "dis", "follow", "preint2", "cal", "excer", "both", "follow2", "wash", "wash2"))
 
-# Boxplots using raw sales counts for ZeroCal 
 ggplot(data = sale_data_c %>% 
          filter(Intervention_new != "wash" & Intervention_new != "wash2"), 
        aes(x = Intervention_new, y = ZeroCal)) + 
   geom_boxplot(outlier.colour = "red", outlier.shape = 1) +
   facet_wrap(~ Site, ncol = 3, scales = "free_y") + 
   xlab("Intervention") + 
-  ylab("count of zero-calorie beverages") +
-  theme_minimal(base_size = 14) +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),axis.title.y = element_text(size = 10),axis.title.x = element_text(size = 10))
+  ylab("count of zero-calorie") +
+  theme_minimal(base_size = 10) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),axis.title.y = element_text(size = 8),axis.title.x = element_text(size = 10))
 
 ```
-The histograms (as in Figure 4) indicates a right skewed distribution of the sales count which is a common feature in count data. Particularly here, it is an indication that on most days, a lower to medium number of sales occur, with high sales counts being less frequent. In addition, there seems to be no equivalence in the mean and variance of sales count, suggesting a possible overdispersion. For sugary beverages, there seem to be a more uniform distribution exhibited by the chop and HF sites across the range of sales count. while in contrary, zero calorie beverages show a steeper drop-off frequency as sales counts increase. The NS site describes a very low sales counts for zero-calorie beverages compared to sugary beverages, which may reflect a different consumer preference or less effective interventions at this site. 
 
-```{r histgram-plot, fig.height=3, fig.width=6, fig.cap= "Daily count of zero-calorie beverages sales over time for each of the three sites."}
+Moreover, histograms can be utilized to illustrate the overall distribution of count variables. For instance, Figure 4 reveals that beverage consumption exhibits a bimodal shape. This visualization assists in identifying potential overdispersion within the count data, guiding the selection of a more suitable model for further analysis.
+
+```{r histgram-plot, fig.height=3, fig.width=6, fig.cap= "Daily count of beverages  over time for each of the three sites."}
+
 combined_data <- sale_data_c %>%
   gather(key = "ProductType", value = "Count", ZeroCal, Sugary) %>%
   mutate(ProductType = factor(ProductType, levels = c("ZeroCal", "Sugary")))
@@ -151,27 +141,28 @@ combined_data <- sale_data_c %>%
 ggplot(combined_data, aes(x = Count)) +
   geom_histogram(binwidth = 16, fill = "skyblue", color = "black") +
   facet_grid(ProductType ~ Site, scales = "free") +
-  theme_minimal()
+  theme_minimal()+
+  ylab("Frequency")
 ```
 
 
 
 
 ## Formal Analysis
-To see which interventions lead to increases in zero-calorie beverages consumption and/or decreases in sugary beverages consumption, it is recommended to use generalized linear mixed models (GLMMs), which introduce random effects to the corresponding generalized linear model and are applicable to count longitudinal data.The individual-specific random effects in GLMMs can incorporate the between-individual variations and capture the correlation in the repeated outcomes over a period of time. The major assumption of GLMMs is also the normality of random variables. 
+To see which interventions lead to increases in zero-calorie beverages consumption and/or decreases in sugary beverages consumption, it is recommended to use generalized linear mixed models (GLMMs), which introduce random effects to the corresponding generalized linear model and are applicable to count longitudinal data. The individual-specific random effects in GLMMs can incorporate the between-individual variations and capture the correlation in the repeated outcomes over a period of time, which aligns with the analytical requirements and the inherent characteristics of the data The major assumption of GLMMs is the normality distribution of random variables. 
 
-It is recommended to fit GLMM by introducing the random effects to sites, because the considerable differences can be seen (Figure 2) in the tendency of beverage consumption among the three sites, and the random effects can account the variabilities between different sites. The count of zero-calorie beverages or sugary beverages are response variables. This count data directly aligns with the objectives to quantify changes in consumer behavior by assessing the actual volume of beverage sales under different conditions. 
+The count of zero-calorie beverages and  sugary beverages are response variables. This count data directly aligns with the objectives to quantify changes in consumer behavior by assessing the actual volume of beverage sales under different interventions. Regarding the predictor variables,  we recommend using `Intervention` and `DofW`,  where `Total` of all beverages can be added as offset. 
 
-Regarding the predictor variables, we recommend using `Intervention` and `DofW`. For `Intervention`, it is important to first rename some of the categories. For the observations made in the second pre-intervention period and the second follow-up period, the values of `Intervention` should be respectively replaced by something like "preint2" and "follow2". This way we are not mixing up the first and second pre-intervention and follow-up period in our analysis. Also, "wash" and "wash2" can be combined into one category as they are not of the main interest in the study. For `DofW`, Monday through Friday can be merged into a category called weekday, and Saturday and Sunday can be merged into a category called weekend. When adding text label of `DofW` to each of the data points in Figure 2, it can be seen that most of the valleys of the time series happen at weekends. Therefore, it is important to control for day of week when making comparisons between intervention and pre-intervention periods. In summary, the non-residual part of each site-specific model can be specified as ZeroCal_count ~ Intervention_updated + DofW_updated + site or Sugary_percent ~ Intervention_updated + DofW_updated +site.
+It is recommended to fit GLMM by introducing the random effects to sites, because the considerable differences can be seen (Figure 2) in the baseline of beverage consumption among the three sites, and the random effects can account the variability between different sites. Another critical aspect that warrants further consideration in GLMMs is the selection of the link function. For modeling count data, the log link function is commonly used with the Poisson or Negative binomial distribution [@fox]. The log link ensures that the predicted counts are always positive. The choice can be theoretically justified based on the distribution of the response variables being modeled. Figure 4 in EDA shows there is potential overdispersion in the data, which means the Negative binomial could fit the nature of data better. Moreover, in this case, model fit statistics (e.g., AIC) are suggested to determine the most suitable formation of model. Based on the results of the optimal model, the estimated coefficients of different interventions can be used for intervention effect assessment and comparison. On the other hand, the estimated random effects of each site can illustrate the affects caused by location variability. Differences in the effects of interventions across sites can be accounted for by incorporating an interaction term between site and intervention in an alternative model. Significant coefficients of this interaction term can illustrate the extent to whether the effects of interventions vary by site, offering insights into how site-specific factors influence the effectiveness of interventions.
 
-Another crucial point needs further consideration in GLMM is the choice of link function. For modeling count data, the log link function is commonly used with the Poisson or negative binomial distribution [@fox]. The log link ensures that the predicted counts are always positive.The choice can be theoretically justified based on the distribution of the response variable and the nature of the variables being modeled. Moreover, in this case, model fit statistics (e.g., AIC) are suggested to determine the most suitable link function. For example, the GLMM with the smallest AIC values can be chosen as the final model. Based on the results of the final model, the estimated coefficients of different interventions can be used for intervention effect assessment and comparison. On the other hand, the estimated random effects of each site can illustrate the affects caused by location variability.
-
-One limitation of this approach is the challenge in statistically identifying the differences in intervention effects across different sites. However, we could still learn differences in random effects between sites in a sense that maybe statistically significant  are detected for some interventions in some sites but not in other sites. 
+One limitation of this approach is the challenge in statistically identifying the differences in intervention effects across different sites. Nevertheless, by examining the random effects across sites, we can discern statistically significant differences in the impact of certain interventions at some sites but not at others. This analysis allows us to understand the variability in intervention effectiveness due to site-specific characteristics. On the other hand, whether the data fits the model's assumptions well also needs to be cautiously verified. 
 
 ## Conclusions
-It is recommended to use daily sales in percentage terms as response variable for the analysis, to better represent the relative consumption of zero-calorie and sugared beverages. Besides the tables showing the missingness of the dataset, the time series plots can be displayed to visualize the daily changes of zero-calorie drinks consumption, and the side by side boxplots can illustrate the relationship between the daily sales and various interventions at each site. 
+It is recommended to use daily count of zero-calorie and sugary beverages as response variables for the analysis, and `Intervention` and `DofW` should serve as the predictor variables. Besides the tables showing the missingness of the dataset, the time series plots can be displayed to visualize the daily changes of zero-calorie drinks consumption, and the side by side boxplots can illustrate the relationship between the daily sales and various interventions at each site. 
 
-We suggest to implement GLS for each site to capture the association between changes in beverage consumption and the adopted interventions, allowing us to account for the dependence structure of residuals of the model.  Specifically, `Intervention` and `DofW` should serve as the predictor variables. The optimal model for each site can be determined by comparing the AIC across several candidate models, with each model specifying one of four different correlation structures. Differences in the effectiveness of various interventions and sites are identifiable by comparing the coefficients of the final models. 
+We suggest to implement GLMM with site as random effects to capture the variability across sites, it allows us to account for the differences in the effects of interventions across sites, by introducing the interaction term to the model. According to the results of statistical analysis (see Appendix), the Negative binomial GLMM has a better fit for this dataset than Poisson model based on the AIC score. The results indicate that only the combination of discounts and messaging effectively enhances the consumption of zero-calorie beverages. The data also reveal that posters displaying both calorie and exercise information tend to deter consumption. The model incorporating the interaction term between site and intervention demonstrates that the effects of interventions vary across sites. Overall, the model fits the data well, but some assumptions and conclusions still need further verification.
+
+
 
 \newpage
 ## References {.unnumbered}
@@ -185,19 +176,19 @@ We suggest to implement GLS for each site to capture the association between cha
 In this appendix, we mainly focus on implementing the suggested models to approach the proposed statistical questions, and also provide detailed interpretations for the results. 
 
 ### Model Construction
-To develop a suitable GLMM for this dataset, the primary consideration should be the selection of random effects. The dataset clearly shows significant variability in beverage consumption across the three sites, indicating that incorporating a random intercept for each site in the model is a reasonable approach, which allows the model to capture the variation in beverage consumption attributable to differences among the sites. Another consideration is setting random slopes for intervention within site to allow the effect of interventions to vary across sites, e.g., some interventions might be more effective in certain sites than in others, reflecting the unique contexts or characteristics of those sites. Moreover, the selection of the link function also requires careful consideration. Both the Poisson and the negative binomial link functions are commonly utilized in GLMMs when dealing with count data as the response variable. Due to the negative binomial model's additional dispersion parameter, the estimates can be more reliable when the data exhibit overdispersion. However, determining which method aligns more closely with the nature of data requires further analysis. The AIC can be employed to select the most suitable model for the final analysis, providing a quantitative measure to compare the relative quality of different models. Generally, we suggest to construct models with the following formation, 
+To develop a suitable GLMM for this dataset, the primary consideration should be the selection of random effects. The dataset clearly shows significant variability in beverage consumption across the three sites, indicating that incorporating a random intercept for each site in the model is a reasonable approach, which allows the model to capture the variation in beverage consumption attributable to differences among the sites. Another consideration is setting random slopes for intervention within site to allow the effect of interventions to vary across sites, e.g., some interventions might be more effective in certain sites than in others, reflecting the unique contexts or characteristics of those sites. Moreover, the selection of the specific type of model also requires careful consideration. Both the Poisson and the Negative binomial distribution are commonly utilized in GLMMs when dealing with count data as the response variable. Due to the Negative binomial model's additional dispersion parameter, the estimates can be more reliable when the data exhibit overdispersion. However, determining which method aligns more closely with the nature of data requires further analysis. The AIC can be employed to select the most suitable model for the final analysis by providing a quantitative measure to compare the relative quality of different models. Generally, we suggest to construct models with the following formation, 
 
 ```{=tex}
 \begin{equation}
 \label{eq2}
-\log(\text{ZeroCal}_{ijs}) = \beta_0 + \beta_1 \cdot \text{Intervention}_{ijs} + \beta_2 \cdot \text{DofW}_{ijs} + \beta_3 \cdot \log(\text{Total}_{ijs}) + u_{s}
+\log(\text{Zero-calorie}_{s}) = \beta_0 + \beta_1 \cdot \text{Intervention}_{s} + \beta_2 \cdot \text{DofW}_{s} + \beta_3 \cdot \log(\text{Total}_{s}) + u_{s}
 \end{equation}
 ```
 
-where `ZeroCal` denotes the daily count of zero-calorie beverage, $\beta_0$ is the overall intercept, $\beta_1$ and $\beta_2$ are the fixed effect coefficients of `DofW` and `Intervention`, respectively, and $u_s$ is the random effect for `Site`, indicating variation in the log count of zero-calorie that is specific to each site but not explained by `DofW`, `Intervention`, or `Total`. If the goal is to investigate the impact of interventions on the daily count of sugared beverage consumption, the response variable should be directly replaced with the daily count of `sugared`.
+where $\beta_0$ is the overall intercept, $\beta_1$ and $\beta_2$ are the fixed effect coefficients of `DofW` and `Intervention`, respectively, and $u_s$ is the random effect for `Site`, indicating variation in the log count of zero-calorie that is specific to each site but not explained by `DofW`, `Intervention`, or `Total`. If the goal is to investigate the impact of interventions on the daily count of sugared beverage consumption, the response variable should be directly replaced with the daily count of `sugary` beverages.
 
 ### Model Selection
-In this section we evaluate the performance of Poisson model and Negative binomial model based on the AIC score. The results in table \ref{tab2} illustrates the AIC of Negative binomial model is significant lower than that of Poisson model, which implies negative binomial provides a better fits, likely due to potential overdispersion within the count of beverage. Thus, it is suggested to use negative binomial as the final model for further analysis according to this criterion. 
+In this section we evaluate the performance of Poisson model and Negative binomial model based on the AIC score. The results in table \ref{tab2} illustrates the AIC of Negative binomial model is significant lower than that of Poisson model, which implies Negative binomial provides a better fits, likely due to potential overdispersion within the count of beverage. Thus, it is suggested to use Negative binomial as the final model for further analysis according to this criterion. 
 
 ```{=tex}
 \begin{table}[htbp]
@@ -218,7 +209,7 @@ In this section we evaluate the performance of Poisson model and Negative binomi
 
 
 ### Results analysis
-By fitting the negative binomial GLMM for daily count of zero-calorie beverages, the estimated fixed effect coefficients are shown in table \ref{tab3}. The interventions are incorporated as fixed effects in the model to quantify the average impact of various interventions on beverage consumption. The results indicate that only the combination of discounts and relevant explanatory messages significantly promotes the consumption of zero-calorie beverages, comparing to the baseline (pre-intervention). Conversely, providing calorie information alongside exercise details appears to have a somewhat negative effect on consumption. Meanwhile, the most of coefficients of `DofW` are not significant, indicating that the daily consumption of beverages is not strongly associated with the day of the week.
+By fitting the Negative binomial GLMM for daily count of zero-calorie beverages, the estimated fixed effect coefficients are shown in table \ref{tab3}. The interventions are incorporated as fixed effects in the model to quantify the average impact of various interventions on beverage consumption. The results indicate that only the combination of discounts and relevant explanatory messages significantly promotes the consumption of zero-calorie beverages, comparing to the baseline (pre-intervention). Conversely, providing calorie information alongside exercise details appears to have a somewhat negative effect on consumption. Meanwhile, the most of coefficients of `DofW` are not significant, indicating that the daily consumption of beverages is not strongly associated with the day of the week.
 ```{=tex}
 \begin{table}[htbp]
 \centering
@@ -237,14 +228,14 @@ Calorie \& Exercise information.      & -0.137 & 0.048  &    0.004 \\
 \end{tabular}
 \end{table}
 ```
-On the other hand, site is treated as a random effect on intercept of the model, with an estimated variance of 0.105 and a standard deviation of 0.324, which indicates a moderate level of variation in the baseline counts of zero-calorie beverages across different sites. The similar models can developed for the count of sugared beverages. 
+On the other hand, site is treated as a random effect on intercept of the model, with an estimated variance of 0.105 and a standard deviation of 0.324, which indicates a moderate level of variation in the baseline counts of zero-calorie beverages across different sites. The similar models can developed for the count of sugary beverages. 
 
 Another important statistical question is to determine if the effects of different interventions varying by sites. A potential approach to address this issue is by introducing site as random effects on interventions. However, models structured in this manner often struggle to achieve convergence, making it challenging to obtain reliable results. A viable alternative approach is to incorporate an interaction term between site and intervention, which allows for assessing how the effect of interventions varies across different sites. Specifically, we can construct an alternative model with the formation as
 
 ```{=tex}
 \begin{equation}
 \label{eq2}
-\log(\text{ZeroCal}) = \beta_0 + \beta_1 \cdot \text{Intervention \times Site} + \beta_2 \cdot \text{DofW} + \beta_3 \cdot \log(\text{Total})
+\log(\text{Zero-calorie}) = \beta_0 + \beta_1 \cdot \text{Intervention \times Site} + \beta_2 \cdot \text{DofW} + \beta_3 \cdot \log(\text{Total})
 \end{equation}
 ```
 
@@ -276,10 +267,10 @@ NS \times (Calorie \& Exercise information)      & -0.242 & 0.102  & \@{} \@{}  
 
 ### Model checking
 
-After fitting the models, it's crucial to check the assumptions and evaluate the fit. First of all, it's essential to verify that the chosen Negative binomial GLMM adequately reflects the characteristics of the data, even though the AIC score suggests it provides a better fit. According to the outputs of model, the dispersion parameter for the negative binomial distribution is 14, which indicates that there is considerable overdispersion within count data, and thus, the negative binomial model is more appropriate than a Poisson model. On the other hand, we check the normality assumption about residual, the Q-Q plot in Fugure 4 suggests that the residuals mostly adhere to the normal distribution assumption, although there are some observable deviations. These deviations could be attributed to outliers within the data. The residuals versus the predicted plot indicates that the model might not be fully adequate for the data because deviation between actual and predicted quantile, which can be further investigated and improved. As for the model (2), the Q-Q plot in Figure 5 indicates that the residuals exhibit a significant deviation from the normality. Moreover, the patterns observed in the residuals versus the predicted plot suggest that the developed model could be inappropriate for the data. 
+After fitting the models, it's crucial to check the assumptions and evaluate the fit. First of all, it's essential to verify that the chosen Negative binomial GLMM adequately reflects the characteristics of the data, even though the AIC score suggests it provides a better fit. According to the outputs of model, the dispersion parameter for the Negative binomial distribution is 14, which indicates that there is considerable overdispersion within count data, and thus, the Negative binomial model is more appropriate than a Poisson model. On the other hand, we check the normality assumption about residual, the Q-Q plot in Figure 4 suggests that the residuals mostly adhere to the normal distribution assumption, although there are some observable deviations. These deviations could be attributed to outliers within the data. The residuals versus the predicted plot indicates that the model might not be fully adequate for the data because deviation between actual and predicted quantile, which can be further investigated and improved. As for the model (2), the Q-Q plot in Figure 5 indicates that the residuals exhibit a significant deviation from the normality. Moreover, the patterns observed in the residuals versus the predicted plot suggest that the developed model could be inappropriate for the data. 
 
 ### Discussion
-In this appendix, we provide the detailed procedure for developing GLMMs and analyzing the results. The selection with AIC score indicates that Negative binomial link function has a better fit for our data than Poisson. The model outputs reveal that only the combination of discounts with messaging effectively promotes the consumption of zero-calorie beverages. Interestingly, posters containing both calorie and exercise information appear to have inhibitory effects on consumption. The results of model with interaction term of site and intervention illustrates the effects of interventions varying by sites as we expected. However, this model has bad performance on assumption checking, the drawn conclusions should be further determined and verified. 
+In this appendix, we provide the detailed procedure for developing GLMMs and analyzing the results. The selection with AIC score indicates that Negative binomial distribution has a better fit for our data than Poisson. The model outputs reveal that only the combination of discounts with messaging effectively promotes the consumption of zero-calorie beverages. Furthermore, posters containing both calorie and exercise information appear to have inhibitory effects on consumption. The results of model with interaction term of site and intervention illustrates the effects of interventions varying by sites as we expected. However, this model has bad performance on assumption checking, the drawn conclusions should be further determined and verified. 
 
 ```{r}
 
@@ -311,12 +302,12 @@ plot(simulation_output)
 
 ```{r}
 # data missingness  by Site
-count_missing<- sale_data %>%
-    group_by(Site, Intervention) %>%
-    summarise(across(.cols = where(~ any(is.na(.x))), ~sum(is.na(.x))))
+#count_missing<- sale_data %>%
+#    group_by(Site, Intervention) %>%
+#    summarise(across(.cols = where(~ any(is.na(.x))), ~sum(is.na(.x))))
 
 # Table
-kable(count_missing, caption = "Number of missing observations for columns with missing data present by site and intervention type.")
+#kable(count_missing, caption = "Number of missing observations for columns with missing data present by site and intervention type.")
  
 ```
 
