@@ -135,7 +135,7 @@ Moreover, histograms can be utilized to illustrate the overall distribution of c
 
 combined_data <- sale_data_c %>%
   gather(key = "ProductType", value = "Count", ZeroCal, Sugary) %>%
-  mutate(ProductType = factor(ProductType, levels = c("Zero-calorie", "Sugary")))
+  mutate(ProductType = factor(ProductType, levels = c("ZeroCal", "Sugary")))
 
 # Create the faceted plot
 ggplot(combined_data, aes(x = Count)) +
